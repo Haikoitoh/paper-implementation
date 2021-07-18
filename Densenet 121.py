@@ -27,7 +27,7 @@ def dense_block(x, repetition, filters):
 
 def transition_layer(x):
 
-    x = conv_layer(x, K.int_shape(x)[-1] // 2)
+    x = conv_layer(x, x.shape[-1] // 2)
     x = AvgPool2D(2, strides=2, padding="same")(x)
     return x
 
@@ -42,7 +42,7 @@ def densenet(input_shape, n_classes, filters=32):
 
     for repetition in [6, 12, 24, 16]:
 
-        d = dense_block(x, repetition)
+        d = dense_block(x, repetition, filters)
         x = transition_layer(d)
     x = GlobalAveragePooling2D()(d)
     output = Dense(n_classes, activation="softmax")(x)
@@ -55,5 +55,4 @@ input_shape = 224, 224, 3
 n_classes = 3
 
 model = densenet(input_shape, n_classes, filters=32)
-# model = DenseNet121()
 model.summary()
